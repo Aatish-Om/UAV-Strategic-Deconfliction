@@ -58,6 +58,7 @@ python main.py
 ```
 
 4. Use the GUI to:
+
 ![image](https://github.com/user-attachments/assets/e708b6d4-1ab3-4abc-bd32-def7d581aab5)
 
 ![image](https://github.com/user-attachments/assets/4050b964-b425-48ab-a7ce-8f109ad4b711)
