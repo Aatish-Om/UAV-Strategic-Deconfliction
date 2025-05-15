@@ -1,0 +1,17 @@
+[
+  {
+    "id": "droneA",
+    "waypoints": [
+      {"pos": [10, 10], "time": 2},
+      {"pos": [15, 15], "time": 4}
+    ]
+  },
+  {
+    "id": "droneB",
+    "waypoints": [
+      {"pos": [40, 40], "time": 8},
+      {"pos": [50, 50], "time": 10}
+    ]
+  }
+]
+

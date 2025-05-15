@@ -1,0 +1,97 @@
+import json
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.animation import FuncAnimation
+import tkinter
+CONFLICT_DISTANCE = 5
+
+def load_mission(filepath):
+    with open(filepath, 'r') as f:
+        return json.load(f)
+
+def euclidean_distance_3d(p1, p2):
+    return np.sqrt((p1['x'] - p2['x'])**2 + (p1['y'] - p2['y'])**2 + (p1['z'] - p2['z'])**2)
+
+def detect_conflicts(primary, drones):
+    conflicts = []
+    for t, p_point in enumerate(primary):
+        for drone_name, path in drones.items():
+            if t < len(path):
+                d_point = path[t]
+                dist = euclidean_distance_3d(p_point, d_point)
+                if dist < CONFLICT_DISTANCE:
+                    conflicts.append((t, p_point, drone_name))
+    return conflicts
+
+def plot_3d_paths(primary, drones, conflicts):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    p_x = [p['x'] for p in primary]
+    p_y = [p['y'] for p in primary]
+    p_z = [p['z'] for p in primary]
+    ax.plot(p_x, p_y, p_z, label='Primary', color='blue')
+
+    for name, path in drones.items():
+        x = [p['x'] for p in path]
+        y = [p['y'] for p in path]
+        z = [p['z'] for p in path]
+        ax.plot(x, y, z, '--', label=name)
+
+    for t, point, drone in conflicts:
+        ax.scatter(point['x'], point['y'], point['z'], color='red', marker='x')
+        ax.text(point['x'], point['y'], point['z'], f"{drone}@t={t}", fontsize=8)
+
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    ax.legend()
+    plt.title("3D UAV Path with Conflicts")
+    plt.show()
+
+def animate_paths(primary, drones):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, 100)
+    ax.set_zlim(0, 100)
+
+    p_line, = ax.plot([], [], [], 'b-', label='Primary')
+    drone_lines = {name: ax.plot([], [], [], '--', label=name)[0] for name in drones}
+    ax.legend()
+
+    def update(frame):
+        if frame >= len(primary):
+            return
+        p_line.set_data(p_x[:frame+1], p_y[:frame+1])
+        p_line.set_3d_properties(p_z[:frame+1])
+        for name, path in drones.items():
+            if frame < len(path):
+                d_x = [p['x'] for p in path[:frame+1]]
+                d_y = [p['y'] for p in path[:frame+1]]
+                d_z = [p['z'] for p in path[:frame+1]]
+                drone_lines[name].set_data(d_x, d_y)
+                drone_lines[name].set_3d_properties(d_z)
+
+    p_x = [p['x'] for p in primary]
+    p_y = [p['y'] for p in primary]
+    p_z = [p['z'] for p in primary]
+
+    ani = FuncAnimation(fig, update, frames=len(primary), interval=500, repeat=False)
+    plt.title("3D UAV Path Animation")
+    plt.show()
+
+if __name__ == "__main__":
+    primary = load_mission("mission_data/primary_mission.json")
+    droneA = load_mission("mission_data/droneA.json")
+    droneB = load_mission("mission_data/droneB.json")
+    simulated_drones = {"DroneA": droneA, "DroneB": droneB}
+
+    conflicts = detect_conflicts(primary, simulated_drones)
+    for t, p, d in conflicts:
+        print(f"Conflict at [{p['x']}, {p['y']}, {p['z']}] at t={t} with {d}")
+
+    plot_3d_paths(primary, simulated_drones, conflicts)
+    animate_paths(primary, simulated_drones)
+
