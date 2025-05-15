@@ -71,16 +71,19 @@ python main.py
 ## Test Cases
 
 - `mission_data/test_case1`: Vertical conflict
+  
 ![image](https://github.com/user-attachments/assets/9572027a-3731-4692-b0de-4d0e50814920)
 
 ![image](https://github.com/user-attachments/assets/0076b962-b1a7-4c3b-a89b-c23a75d0d579)
 
 - `mission_data/test_case2`: Path intersection
+  
 ![image](https://github.com/user-attachments/assets/94ad89cb-57fb-4181-b311-67a0baf0698c)
 
 ![image](https://github.com/user-attachments/assets/8f59bad0-6e4c-4d0d-9a25-1ab7e9301d0e)
 
 - `mission_data/test_case3`: Parallel path proximity
+  
 ![image](https://github.com/user-attachments/assets/4410012c-c255-4f8e-998c-9778486eeeff)
 
 ![image](https://github.com/user-attachments/assets/93112595-f53f-4e93-a247-b33c0afd9555)
